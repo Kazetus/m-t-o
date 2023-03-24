@@ -20,8 +20,10 @@ function formAffiche() {
 formAffiche();
 function clearBody() {
     console.log(document.querySelectorAll('div'))
-    document.body.removeChild(document.querySelector('div'));
-    document.body.removeChild(document.querySelector('div'));
+    let remove= document.querySelectorAll('.prevision');
+    for(let i = 0; i < remove.length; i++) {
+        document.body.removeChild(document.querySelector('.prevision'));
+    };
 }
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -32,21 +34,23 @@ form.addEventListener('submit', (e) => {
             response.json().then(data => afficher(data));
         }
         else {
-            let errormessage = document.createElement('p');
-            errormessage.innerHTML = "<p class='error'> Impossible d'obtenir les prévisions pour la ville saisie. </p>";
-            document.body.append(errormessage);
+            errorFetch();
         }
     } )
     .catch(error => {
         console.log(error);
-        let errormessage = document.createElement('p');
-        errormessage.innerHTML = "<p> Impossible d'obtenir les prévisions pour la ville saisie. </p>";
-        document.body.append(errormessage);
+        errorFetch();
     });
 });
-
+function errorFetch() {
+    clearBody();
+    let errorMessage = document.createElement('div');
+    errorMessage.className = 'prevision error'
+        errorMessage.innerHTML = "Impossible d'obtenir les prévisions pour la ville saisie.";
+        document.body.append(errorMessage);
+}
 function afficher(data){
-    if(document.querySelectorAll('div').length>0){
+    if(document.querySelectorAll('div').length > 0){
         clearBody();
     }
     let div = document.createElement('div');
