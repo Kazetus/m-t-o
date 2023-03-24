@@ -14,20 +14,41 @@ input.className = 'meteo';
 form.appendChild(label);
 form.appendChild(input);
 form.appendChild(button);
-document.body.appendChild(form);
-
+function formAffiche() {
+    document.body.appendChild(form);
+}
+formAffiche();
+function clearBody() {
+    console.log(document.querySelectorAll('div'))
+    document.body.removeChild(document.querySelector('div'));
+    document.body.removeChild(document.querySelector('div'));
+}
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     // let meteo = fetch(`api.openweathermap.org/data/2.5/weather?id=${input.value.charAt(0).toUpperCase() + input.value.slice(1)},uk&APPID=01ada84814cabcf30b8e05a48b3295fc`);
     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${input.value}?unitGroup=metric&key=8MA8ABG7RUKR6DFQU8D8S6VZ6&contentType=json`)
-    .then((data) => data.json())
-    .then(data2 => afficher(data2))
-    .catch((error) => {
+    .then(function(response){
+        if(response.ok) {
+            response.json().then(data => afficher(data));
+        }
+        else {
+            let errormessage = document.createElement('p');
+            errormessage.innerHTML = "<p class='error'> Impossible d'obtenir les prévisions pour la ville saisie. </p>";
+            document.body.append(errormessage);
+        }
+    } )
+    .catch(error => {
         console.log(error);
+        let errormessage = document.createElement('p');
+        errormessage.innerHTML = "<p> Impossible d'obtenir les prévisions pour la ville saisie. </p>";
+        document.body.append(errormessage);
     });
 });
 
 function afficher(data){
+    if(document.querySelectorAll('div').length>0){
+        clearBody();
+    }
     let div = document.createElement('div');
     div.className = "prevision";
     let content = data.currentConditions;
